@@ -6,7 +6,6 @@ import './App.css';
 
 // Components
 import Main from './components/MainComponent';
-import { DISHES } from './shared/dishes';
 
 import { Provider } from 'react-redux';
 import { ConfigureStore } from './redux/configureStore';
