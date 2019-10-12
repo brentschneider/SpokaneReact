@@ -22,7 +22,7 @@ function RenderDish({dish}) {
     );
 }
 
-function RenderComments({comments}) {
+function RenderComments({comments, addComment, dishId}) {
     if (comments != null) 
         return (
             <div className="col-12 col-md-5 m-1">
@@ -39,7 +39,7 @@ function RenderComments({comments}) {
                         );
                     })}
                 </ul>
-                <CommentForm />
+                <CommentForm dishId={dishId} addComment={addComment} />
             </div>
         );
     else
@@ -69,51 +69,30 @@ class CommentForm extends Component {
   
     handleSubmit(values) {
         this.toggleModal();
-        console.log('Current State is: ' + JSON.stringify(values));
-        alert('Current State is: ' + JSON.stringify(values));
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
     render() {
         return(
             <div>
-                
                 <Button outline onClick={this.toggleModal}><span className="fa fa-pencil fa-lg"></span> Submit Comment</Button>
-
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
                     <ModalBody>
                         <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
-
                             <Row className="form-group">
                                 <Col>
                                     <Label htmlFor="rating">Rating</Label>
-                                    <Control.select model=".rating" id="rating" name="rating" 
-                                        placeholder="Select a Number"
-                                        className="form-control"
-                                        validators={{
-                                            minLength: minLength(1), 
-                                        }}>
-                                        <option> </option>
+                                    <Control.select model=".rating" id="rating" name="rating"
+                                        className="form-control">
                                         <option>1</option>
                                         <option>2</option>                                       
                                         <option>3</option>
                                         <option>4</option>
                                         <option>5</option>
                                     </Control.select>
-                                    <Errors
-                                        className="text-danger"
-                                        model=".rating"
-                                        show="touched"x
-                                        messages={{
-                                            minLength: 'Must sellect a rating'
-                                        }}
-                                    />
-
-
-                                    
                                 </Col>
-                            </Row>
-
+                            </Row>            
                             <Row className="form-group">
                                 <Col>
                                 <Label htmlFor="author" >Your Name</Label>
@@ -136,7 +115,6 @@ class CommentForm extends Component {
                                      />                                        
                                 </Col>
                             </Row>
-
                             <Row className="form-group">
                                 <Col>
                                 <Label htmlFor="comment">Comment</Label>
@@ -144,12 +122,10 @@ class CommentForm extends Component {
                                         rows="6"
                                         className="form-control" />
                                 </Col>
-                            </Row>
-
+                            </Row>    
                             <Button type="submit" className="bg-primary">
                                 Submit
                             </Button>
-
                         </LocalForm>
                     </ModalBody>
                 </Modal>
@@ -174,7 +150,10 @@ const DishDetail = (props) => {
                 </div>
                 <div className="row">
                     <RenderDish dish={props.dish} />
-                    <RenderComments comments={props.comments} />
+                    <RenderComments comments={props.comments} 
+                        addComment={props.addComment} 
+                        dishId={props.dish.id}
+                    />
                 </div>
             </div>
         );
